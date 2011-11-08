@@ -55,6 +55,7 @@ action :configure do
 
   service_options = {}
   service_options[:service_name] = new_resource.service_name
+  service_options[:start_type] = new_resource.start_type if new_resource.start_type
   service_options[:service_type] = new_resource.service_type if new_resource.service_type
   service_options[:error_control] = new_resource.error_control if new_resource.error_control
   service_options[:binary_path_name] = new_resource.binary_path_name if new_resource.binary_path_name
@@ -65,6 +66,7 @@ action :configure do
 
 
   if Win32::Service.exists?(new_resource.service_name)
+    Chef::Log.debug "Service Options #{service_options.inspect}"
     Win32::Service.configure(service_options)
   else
     raise Chef::Exceptions::Service, "This does not exists (#{new_resource.service_name})"
